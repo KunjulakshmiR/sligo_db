@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLiGO: Gene Ontology-driven Synthetic Lethal Interactions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.11/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/2.3.7/js/dataTables.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script_v2.js') }}" defer> </script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <div class="logo-main">
+                <span class="logo-sl">SLi</span><span class="logo-go">GO</span>
+            </div>
+        </div>
+        <div class="logo-tagline">Gene Ontology-driven Synthetic Lethal Interactions</div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+        <button class="tab-btn active" onclick="switchTab('home')"><i class="fas fa-home"></i> Home</button>
+        <button class="tab-btn" onclick="switchTab('search')"><i class="fas fa-search"></i> Search</button>
+        <button class="tab-btn" onclick="switchTab('about')"><i class="fas fa-info-circle"></i> About</button>
+    </div>
+
+    <!-- Home Tab -->
+    <div id="home-tab" class="tab-content active">
+        <section class="intro-section">
+            <h2>
+                <i class="fas fa-dna" style="color: var(--secondary-color); margin-right: 10px;"></i>
+                About SLiGO
+            </h2>
+
+            <p>
+                Welcome to <span class="highlight">SLiGO</span>, a comprehensive database of
+                <strong>synthetic lethal (SL) interactions</strong> predicted using
+                <strong>Gene Ontology (GO) annotations</strong> and
+                <strong>synthetic network features</strong>. Synthetic lethality occurs
+                when the simultaneous disruption of two genes leads to cell death,
+                while disruption of either gene alone is viable. Our algorithm
+                integrates multiple biological data sources to identify
+                high-confidence SL pairs with potential therapeutic applications.
+            </p>
+
+            <div class="info-box">
+                <h3 class="info-box-title">
+                    <i class="fas fa-lightbulb"
+                       style="color: var(--accent-color); margin-right: 8px;"></i>
+                    What can you do with SLiGO?
+                </h3>
+
+                <p>• Search for potential SL partners of your gene of interest across 6 cell lines and a general model</p>
+                <p>• Query specific gene pairs to retrieve confidence scores across all cell lines at once</p>
+                <p>• Filter single-gene results by confidence score and cell line</p>
+                <p>• Download results for further analysis</p>
+            </div>
+
+            <div class="info-box model-info">
+                <h3 class="info-box-title">
+                    <i class="fas fa-project-diagram"
+                       style="color: var(--accent-color); margin-right: 8px;"></i>
+                    SLiGO Prediction Framework
+                </h3>
+
+                <div class="model-grid">
+                    <div class="model-card">
+                        <h4>
+                            <i class="fas fa-globe"></i>
+                            SLxGO
+                        </h4>
+                        <p>
+                            General synthetic lethality prediction model providing
+                            genome-wide SL interaction predictions independent of
+                            cell-line context.
+                        </p>
+                    </div>
+
+                    <div class="model-card">
+                        <h4>
+                            <i class="fas fa-flask"></i>
+                            SLxGO++
+                        </h4>
+                        <p>
+                            Cell line-specific synthetic lethality prediction model
+                            enabling context-dependent analysis across HEK293,
+                            HeLa, A-375, A-549, JURKAT, and K-562 cell lines.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h3 class="info-box-title">
+                    <i class="fa-solid fa-quote-left"
+                       style="color: var(--accent-color); margin-right: 8px;"></i>
+                    Cite:
+                </h3>
+                <p>
+                <a href="https://www.biorxiv.org/content/10.64898/2026.07.31.742101v1"
+                target="_blank">
+                Genome-scale prediction of context-specific synthetic lethality beyond protein interaction networks
+                </a>
+                </p>
+            </div>
+
+        </section>
+
+        <div class="stats-box">
+            <div class="stat-item">
+                <div class="stat-number">68,747</div>
+                <div class="stat-label">
+                    High-confidence SL Predictions (General)<br>
+                    <small>SLxGO</small>
+                </div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-number">489</div>
+                <div class="stat-label">
+                    High-confidence SL Predictions<br>
+                    <small>HEK293</small>
+                </div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-number">4,100</div>
+                <div class="stat-label">
+                    High-confidence SL Predictions<br>
+                    <small>HeLa</small>
+                </div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-number">5,624</div>
+                <div class="stat-label">
+                    High-confidence SL Predictions<br>
+                    <small>A-375</small>
+                </div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-number">1,451</div>
+                <div class="stat-label">
+                    High-confidence SL Predictions<br>
+                    <small>A-549</small>
+                </div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-number">3,054</div>
+                <div class="stat-label">
+                    High-confidence SL Predictions<br>
+                    <small>JURKAT</small>
+                </div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-number">35,905</div>
+                <div class="stat-label">
+                    High-confidence SL Predictions<br>
+                    <small>K-562</small>
+                </div>
+            </div>
+        </div>
+    </div> <!-- end home-tab -->
+
+    <!-- Search Tab -->
+    
+    <div id="search-tab" class="tab-content">
+
+    <div class="search-container">
+
+        <!-- Search mode toggle -->
+        <div class="search-toggle">
+            <button id="toggleSearchModeSearchTab">
+                <i class="fas fa-exchange-alt"></i>
+                Search by Gene Pair
+            </button>
+        </div>
+
+        <!-- Search title -->
+        <h2 class="search-title" id="searchTitleSearchTab">
+            <i class="fas fa-search" style="margin-right: 10px;"></i>
+            Search SL Partners
+        </h2>
+
+
+        <!-- ============================= -->
+        <!-- Single Gene Search Form -->
+        <!-- ============================= -->
+
+        <div id="singleGeneFormSearchTab">
+
+            <div class="form-group">
+
+                <label for="geneInputSearchTab">
+                    <i class="fas fa-dna" style="margin-right: 8px;"></i>
+                    Gene Name:
+                </label>
+
+                <div class="autocomplete">
+
+                    <input
+                        type="text"
+                        id="geneInputSearchTab"
+                        placeholder="e.g., BRCA1, TP53, KRAS"
+                        autocomplete="off"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="cellLineSelectSearchTab">
+                    <i class="fas fa-flask" style="margin-right: 8px;"></i>
+                    Cell Line / Model:
+                </label>
+
+                <select id="cellLineSelectSearchTab">
+
+                    <option value="general">General</option>
+                    <option value="HEK293">HEK293</option>
+                    <option value="A-375">A-375</option>
+                    <option value="A-549">A-549</option>
+                    <option value="HeLa">HeLa</option>
+                    <option value="JURKAT">JURKAT</option>
+                    <option value="K-562">K-562</option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="confidenceRangeSearchTab">
+                    <i class="fas fa-chart-line" style="margin-right: 8px;"></i>
+                    Confidence Range:
+                </label>
+
+
+                <div class="confidence-range">
+
+                    <div class="slidecontainer">
+
+                        <input
+                            type="range"
+                            min="0"
+                            max="1"
+                            value="0.9"
+                            step="0.1"
+                            class="slider"
+                            id="confidenceRangeSearchTab"
+                        >
+
+                        <p>
+                            Value:
+                            <span id="demoSearchTab"></span>
+                        </p>
+
+                    </div>
+
+
+                    <input
+                        type="number"
+                        id="minConfidenceInputSearchTab"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value="0.9"
+                        placeholder="Min"
+                    >
+
+                    <span>to</span>
+
+                    <input
+                        type="number"
+                        id="maxConfidenceInputSearchTab"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value="1.0"
+                        placeholder="Max"
+                    >
+
+                </div>
+
+            </div>
+            <div class="druggable-filter">
+    <label>
+        <input type="radio"
+               name="geneFilterSearchTab"
+               value="all"
+               checked>
+        All genes
+    </label>
+
+    <label>
+        <input type="radio"
+               name="geneFilterSearchTab"
+               value="druggable">
+        Druggable genes
+    </label>
+</div>
+        </div>
+
+
+        <!-- ============================= -->
+        <!-- Gene Pair Search Form -->
+        <!-- ============================= -->
+
+        <div id="genePairFormSearchTab" class="gene-pair-form">
+
+            <div class="form-group">
+
+                <label for="genePairsInputSearchTab">
+                    <i class="fas fa-list" style="margin-right: 8px;"></i>
+                    Gene Pairs (one pair per line):
+                </label>
+
+                <textarea
+                    id="genePairsInputSearchTab"
+                    placeholder="Enter gene pairs in format: Gene1,Gene2&#10;Example:&#10;BRCA1,PARP1&#10;TP53,MDM2&#10;KRAS,STK33"
+                ></textarea>
+
+                <div class="pair-example">
+                    Format: Gene1,Gene2 (one pair per line, case insensitive)
+                </div>
+
+            </div>
+
+
+            <div class="info-box" style="margin-top:10px;">
+
+                <p style="margin:0;font-size:0.95rem;">
+
+                    <i
+                        class="fas fa-info-circle"
+                        style="color:var(--accent-color);margin-right:6px;"
+                    ></i>
+
+                    Pair search returns confidence scores across
+                    <strong>all 7 columns</strong>
+                    (6 cell lines + General) in a single wide table.
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ============================= -->
+        <!-- Controls -->
+        <!-- ============================= -->
+
+        <div class="controls-container">
+
+            <button
+                id="searchBtnSearchTab" onclick="searchSLPartners()">
+                <i class="fas fa-search"></i>
+                Search
+            </button>
+
+
+            <button
+                id="downloadBtnSearchTab"
+                onclick="showDownloadOptions()"
+                disabled
+            >
+                <i class="fas fa-download"></i>
+                Download CSV
+            </button>
+
+        </div>
+
+
+        <!-- Loading -->
+
+        <div id="loadingSearchTab" class="loading">
+
+            <p>
+                <i class="fas fa-circle-notch"></i>
+                Searching through dataset... Please wait
+            </p>
+
+        </div>
+
+
+        <!-- Status -->
+
+        <div
+            class="status"
+            id="statusSearchTab"
+        ></div>
+
+
+        <!-- Cache -->
+
+        <div class="cache-controls">
+
+            <button
+                onclick="clearCache()"
+                title="Clear cached results"
+            >
+                <i class="fas fa-broom"></i>
+                Clear Cache
+            </button>
+
+        </div>
+
+    </div>
+        <div id="network"></div>
+
+        <div id="results"></div>
+
+        <div id="pagination" class="pagination-controls" style="display:none;">
+            <div class="pagination-size">
+                <label for="resultsPerPage"><i class="fas fa-list-ol" style="margin-right: 8px;"></i>Results per page:</label>
+                <select id="resultsPerPage" onchange="changePageSize()">
+                    <option value="20">20</option>
+                    <option value="25" selected>25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
+            <div class="pagination-nav">
+                <button id="firstBtn" title="First page"><i class="fas fa-angle-double-left"></i></button>
+                <button id="prevBtn" title="Previous page"><i class="fas fa-angle-left"></i></button>
+                <div id="pageButtons" class="page-buttons"></div>
+                <button id="nextBtn" title="Next page"><i class="fas fa-angle-right"></i></button>
+                <button id="lastBtn" title="Last page"><i class="fas fa-angle-double-right"></i></button>
+            </div>
+        </div>
+     </div><!-- end search-tab -->
+    
+    <!-- About Tab -->
+    <div id="about-tab" class="tab-content">
+        <section class="intro-section">
+            <h2>
+                <i class="fas fa-info-circle" style="color: var(--secondary-color); margin-right: 10px;"></i>
+                About This Project
+            </h2>
+            <p>
+                <!-- Project description -->
+		The core idea behind SLiGO is to provide biologists and experimental researchers with safe, reliable, and high-quality predictions through a user-friendly platform. The website implements the SlxGO+ algorithm, which integrates SLant protein–protein interaction (PPI) information, Gene Ontology (GO) information, and gene expression data from the Human Protein Atlas.
+
+		The model is designed to prioritize precision over overall accuracy, with the goal of minimizing false-positive predictions. This approach is particularly important for identifying synthetic lethal (SL) interactions, where reliable predictions can help researchers prioritize candidates for further experimental validation.
+            </p>
+
+            <div class="info-box">
+               <!--- <h3 class="info-box-title">
+                    <i class="fas fa-users" style="color: var(--accent-color); margin-right: 8px;"></i>
+                    Team / Contributors
+                </h3>
+                <p>Pravin B — PhD researcher</p>
+                <p><a href="https://sites.google.com/view/simbiosys">Sanu Shameer — Principal Investigator </a></p>
+                <p><a href="https://kamalakannanvijaya.wixsite.com/laboratory-of-parasi">Kamalakannan Vijayan — Principal Investigator </a></p>
+                <p><a href="https://sites.google.com/view/idealabai/home?authuser=0">Saptarshi Bej — Principal Investigator </a></p>
+            -->
+            <!--------------->
+
+<div class="responsive-container-block">
+  <!--<p class="text-blk team-head-text">-->
+    <h3 class="info-box-title">
+    <i class="fas fa-users" style="color: var(--accent-color); margin-right: 8px;"></i>
+                    Team / Contributors
+    </h3>
+  <!--</p>-->
+  <div class="responsive-container-block team-grid">
+    <div class="responsive-cell-block wk-desk-4 wk-ipadp-4 wk-tab-6 wk-mobile-12 card-container">
+      <div class="card">
+        <div class="team-image-wrapper">
+          <img class="team-member-image" src="{{ url_for('static', filename='img/team/pravin.jpg') }}" alt="pravin">
+        </div>
+        <p class="text-blk name">
+          Pravin B
+        </p>
+        <p class="text-blk position">
+          PhD researcher
+        </p>
+        <p class="text-blk feature-text">
+           Research interests: 
+        </p>
+        <div class="social-icons">
+  <!-- LinkedIn -->
+  <a href="https://www.linkedin.com/in/your-profile" target="_blank">
+    <i class="fa-brands fa-linkedin"></i>
+  </a>
+
+  <!-- Website -->
+  <a href="https://yourwebsite.com" target="_blank">
+    <i class="fa-solid fa-globe"></i>
+  </a>
+
+  <!-- Google Scholar -->
+  <a href="https://scholar.google.com/citations?user=YOUR_ID" target="_blank">
+    <i class="fa-solid fa-graduation-cap"></i>
+  </a>
+</div>
+        </div>
+      </div>
+    </div>
+    <div class="responsive-cell-block wk-desk-4 wk-ipadp-4 wk-tab-6 wk-mobile-12 card-container">
+      <div class="card">
+        <div class="team-image-wrapper">
+          <img class="team-member-image" src="{{ url_for('static', filename='img/team/sanu_shameer.jpg') }}" alt="sanu_shameer">
+          
+        </div>
+        <p class="text-blk name">
+          Sanu Shameer
+        </p>
+        <p class="text-blk position">
+          Principal Investigator
+        </p>
+        <p class="text-blk feature-text">
+          Research interests:
+        </p>
+        <div class="social-icons">
+  <!-- LinkedIn -->
+  <a href="https://www.linkedin.com/in/your-profile" target="_blank">
+    <i class="fa-brands fa-linkedin"></i>
+  </a>
+
+  <!-- Website -->
+  <a href="https://sites.google.com/view/simbiosys" target="_blank">
+    <i class="fa-solid fa-globe"></i>
+  </a>
+
+  <!-- Google Scholar -->
+  <a href="https://scholar.google.com/citations?user=YOUR_ID" target="_blank">
+    <i class="fa-solid fa-graduation-cap"></i>
+  </a>
+</div>
+      </div>
+    </div>
+    <div class="responsive-cell-block wk-desk-4 wk-ipadp-4 wk-tab-6 wk-mobile-12 card-container">
+      <div class="card">
+        <div class="team-image-wrapper">
+          <img class="team-member-image" src="{{ url_for('static', filename='img/team/kamakannan-vijayan.jpg') }}" alt="kamalakannan_vijay">
+        </div>
+        <p class="text-blk name">
+          Kamalakannan Vijayan
+        </p>
+        <p class="text-blk position">
+          Principal Investigator
+        </p>
+        <p class="text-blk feature-text">
+          Research interests:
+        </p>
+        <div class="social-icons">
+  <!-- LinkedIn -->
+  <a href="https://www.linkedin.com/in/your-profile" target="_blank">
+    <i class="fa-brands fa-linkedin"></i>
+  </a>
+
+  <!-- Website -->
+  <a href="https://kamalakannanvijaya.wixsite.com/laboratory-of-parasi" target="_blank">
+    <i class="fa-solid fa-globe"></i>
+  </a>
+
+  <!-- Google Scholar -->
+  <a href="https://scholar.google.com/citations?user=YOUR_ID" target="_blank">
+    <i class="fa-solid fa-graduation-cap"></i>
+  </a>
+</div>
+      </div>
+    </div>
+    <div class="responsive-cell-block wk-desk-4 wk-ipadp-4 wk-tab-6 wk-mobile-12 card-container">
+      <div class="card">
+        <div class="team-image-wrapper">
+          <img class="team-member-image" src="{{ url_for('static', filename='img/team/saptarshi_bej.jpg') }}" alt="saptarshi_bej">
+        </div>
+        <p class="text-blk name">
+          Saptarshi Bej
+        </p>
+        <p class="text-blk position">
+          Principal Investigator
+        </p>
+        <p class="text-blk feature-text">
+          Research interests:
+        </p>
+        <div class="social-icons">
+  <!-- LinkedIn -->
+  <a href="https://www.linkedin.com/in/your-profile" target="_blank">
+    <i class="fa-brands fa-linkedin"></i>
+  </a>
+
+  <!-- Website -->
+  <a href="https://sites.google.com/view/idealabai/home?authuser=0" target="_blank">
+    <i class="fa-solid fa-globe"></i>
+  </a>
+
+  <!-- Google Scholar -->
+  <a href="https://scholar.google.com/citations?user=YOUR_ID" target="_blank">
+    <i class="fa-solid fa-graduation-cap"></i>
+  </a>
+</div>
+      </div>
+    </div>
+    <div class="responsive-cell-block wk-desk-4 wk-ipadp-4 wk-tab-6 wk-mobile-12 card-container">
+      <div class="card">
+        <div class="team-image-wrapper">
+          <img class="team-member-image" src="{{ url_for('static', filename='img/team/kunjulakshmi.jpg') }}" alt="kunjulakshmi">
+        </div>
+        <p class="text-blk name">
+          Kunjulakshmi Roffin
+        </p>
+        <p class="text-blk position">
+          Project Associate
+        </p>
+        <p class="text-blk feature-text">
+          Research interests:
+        </p>
+        <div class="social-icons">
+  <!-- LinkedIn -->
+  <a href="https://www.linkedin.com/in/your-profile" target="_blank">
+    <i class="fa-brands fa-linkedin"></i>
+  </a>
+
+  <!-- Website -->
+  <a href="https://yourwebsite.com" target="_blank">
+    <i class="fa-solid fa-globe"></i>
+  </a>
+
+  <!-- Google Scholar -->
+  <a href="https://scholar.google.com/citations?user=YOUR_ID" target="_blank">
+    <i class="fa-solid fa-graduation-cap"></i>
+  </a>
+</div>
+      </div>
+    </div>
+  </div>
+            </div>
+
+            <div class="info-box">
+                <h3 class="info-box-title">
+                    <i class="fas fa-envelope" style="color: var(--accent-color); margin-right: 8px;"></i>
+                    Contact
+                </h3>
+                <p>Questions or feedback? Email us at <a href="mailto:pravin2525@iisertvm.ac.in">pravin2525@iisertvm.ac.in</a></p>
+            </div>
+
+
+
+            <div class="info-box">
+               <h3 class="info-box-title">
+                   <!--- <i class="fas fa-users" style="color: var(--accent-color); margin-right: 8px;"></i>-->
+                    Funding
+                </h3>
+                <div class="sf-logo-track">
+
+                <a href="https://www.indiaalliance.org/" target="_blank">
+                <img src="{{ url_for('static', filename='img/grants/dbt.png') }}" alt="DBT">
+                </a>
+
+                <a href="https://dst.gov.in/anusandhan-national-research-foundation-anrf" target="_blank">
+                <img src="{{ url_for('static', filename='img/grants/anrf.png') }}" alt="ANRF">
+                </a>
+
+                <a href="https://www.iisertvm.ac.in/" target="_blank">
+                <img src="{{ url_for('static', filename='img/grants/iisertvm.jpeg') }}" alt="IISER TVM">
+                </a>
+
+            </div>
+            
+            </div>
+
+        </section>
+    </div> 
+    <!-- end about-tab -->
+
+
+    <!-- Download Options Modal -->
+    <div id="downloadModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h3><i class="fas fa-download" style="color: var(--accent-color); margin-right: 10px;"></i>Download Options</h3>
+            <p>Would you like to download:</p>
+            <div class="modal-options">
+                <button onclick="downloadCSV('current')" style="background: var(--accent-color);"><i class="fas fa-file-csv"></i> Current Page</button>
+                <button onclick="downloadCSV('all')" style="background: var(--secondary-color);"><i class="fas fa-file-excel"></i> All Results</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>SLiGO Database &copy; 2025 | Synthetic Lethal Interactions powered by Gene Ontology</p>
+        <p><i class="fas fa-flask" style="margin-right: 5px;"></i> For research use only</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,28 @@
+Adrenocortical cancer
+Bile duct cancer
+Bladder cancer
+Bone cancer
+Brain cancer
+Breast cancer
+Cervical cancer
+Colorectal cancer
+Esophageal cancer
+Gallbladder cancer
+Gastric cancer
+Head and Neck cancer
+Kidney cancer
+Leukemia
+Liver cancer
+Lung cancer
+Lymphoma
+Myeloma
+Neuroblastoma
+Ovarian cancer
+Pancreatic cancer
+Prostate cancer
+Rhabdoid
+Sarcoma
+Skin cancer
+Testis cancer
+Thyroid cancer
+Uterine cancer
